@@ -130,9 +130,25 @@ select name
 from person,participated 
 where person.driver_id = participated.driver_id and participated.damage_amount >= all(select damage_amount from participated);
 
+select c.model, SUM(p.damage_amount) as
+total_damage
+from car c, participated p 
+WHERE c.reg_num = p.reg_num
+group by c.model
+having sum(p.damage_amount > 20000);
 
-
-
+create view accident_summry as 
+select 
+    a.report_num,
+    a.accident_date,
+    a.location,
+    count(p.driver_id) as participant_count,
+    sum(p.damage_amount) as total_damage
+    from accident a
+    join participated p on a.report_num=p.report_num
+    group by a.report_num,accident_date,location;
+    
+select * from accident_summry;
 
 
     
